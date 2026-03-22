@@ -6,5 +6,5 @@ module.exports = swaggerJsdoc({
     openapi: "3.0.0",
     info: { title: "Product Service API", version: "1.0.0" }
   },
-  apis: [path.join(__dirname, "./src/routes/*.js")]
+  apis: [path.join(__dirname, "./src/routes/productRoutes.js")]
 });
