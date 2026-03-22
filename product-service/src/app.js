@@ -13,4 +13,8 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api", require("./routes/productRoutes"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.get("/", (req, res) => {
+  res.send("Product Service is running 🚀");
+});
+
 app.listen(3001, () => console.log("Product Service running"));
