@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const axios = require("axios");
+const { USER_URL, PRODUCT_URL } = require("../config");
 
 /**
  * @swagger
@@ -37,12 +38,12 @@ router.post("/order", async (req, res) => {
 
     // Call User Service
     const userResponse = await axios.get(
-      `${process.env.USER_URL}/api/user/${userId}`
+      `${USER_URL}/api/user/${userId}`
     );
 
     // Call Product Service
     const productResponse = await axios.get(
-      `${process.env.PRODUCT_URL}/api/products/${productId}`
+      `${PRODUCT_URL}/api/products/${productId}`
     );
 
     // Combine results
@@ -55,7 +56,6 @@ router.post("/order", async (req, res) => {
   } catch (err) {
     console.error(err.message);
 
-    // Handle specific errors
     if (err.response && err.response.status === 404) {
       return res.status(404).json({ message: "User or Product not found" });
     }
