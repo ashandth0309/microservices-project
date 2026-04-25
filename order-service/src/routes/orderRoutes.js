@@ -5,18 +5,62 @@ const axios = require("axios");
  * @swagger
  * /api/order:
  *   post:
- *     summary: Place order
+ *     summary: Place an order (integrates User & Product services)
+ *     tags: [Order]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - productId
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: 64f123abc1234567890
+ *               productId:
+ *                 type: string
+ *                 example: 64f456def4567890123
+ *     responses:
+ *       200:
+ *         description: Order placed successfully
+ *       404:
+ *         description: User or Product not found
+ *       500:
+ *         description: Server error
  */
 router.post("/order", async (req, res) => {
   try {
     const { userId, productId } = req.body;
 
-    const user = await axios.get(`${process.env.USER_URL}/api/user/${userId}`);
-    const product = await axios.get(`${process.env.PRODUCT_URL}/api/products/${productId}`);
+    // Call User Service
+    const userResponse = await axios.get(
+      `${process.env.USER_URL}/api/user/${userId}`
+    );
 
-    res.json({ user: user.data, product: product.data });
-  } catch {
-    res.status(500).send("Error");
+    // Call Product Service
+    const productResponse = await axios.get(
+      `${process.env.PRODUCT_URL}/api/products/${productId}`
+    );
+
+    // Combine results
+    res.json({
+      message: "Order placed successfully",
+      user: userResponse.data,
+      product: productResponse.data,
+    });
+
+  } catch (err) {
+    console.error(err.message);
+
+    // Handle specific errors
+    if (err.response && err.response.status === 404) {
+      return res.status(404).json({ message: "User or Product not found" });
+    }
+
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
