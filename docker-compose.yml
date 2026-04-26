@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  user:
+    build: ./user-service
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./user-service/.env
+
+  product:
+    build: ./product-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./product-service/.env
+
+  order:
+    build: ./order-service
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./order-service/.env
